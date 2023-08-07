@@ -1,0 +1,3 @@
+export const API_KEY_OPENAI = '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';
+
+export const API_KEY_GOOGLE_VISION = 'AIzaSyBN-Z5Ai2wsXYHMPqLnAJSfLB56jJOfK5I';
