@@ -72,9 +72,9 @@ const Home = () => {
                         >
                             <Text
                                 style={{
-                                    fontSize: 17,
+                                    fontSize: 20,
                                     color: "#fff",
-                                    fontWeight: "bold",
+                                    fontWeight: 700,
                                     marginTop: 75,
                                     textAlign: "center",
                                     marginRight: 30,
@@ -97,7 +97,7 @@ const ChooseTools = () => {
     const navigation = useNavigation();
 
     return (
-        <View style={{ gap: 20, height: '100%',  alignItems: "center", justifyContent: "center"}}>
+        <View style={{ gap: 20, height: '100%', alignItems: "center", justifyContent: "center" }}>
             <Text style={{ fontSize: 25, fontWeight: 500, margin: 20, }}>Elige la funcion que quieres utilizar: </Text>
             <View style={{ gap: 30, alignItems: "center", justifyContent: "center", }}>
                 <TouchableOpacity onPress={() => navigation.navigate('ChatBot')} style={{ backgroundColor: "#5B2273", padding: 10, borderRadius: 10, alignItems: "center", justifyContent: "center", gap: 10, width: 230, height: 200 }}>

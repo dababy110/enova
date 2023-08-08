@@ -5,7 +5,7 @@ import {
 } from "react-native";
 import axios from 'axios';
 import { API_KEY_OPENAI } from '../config.js';
-import { GiftedChat, InputToolbar, Composer, Send } from 'react-native-gifted-chat'
+import { GiftedChat, InputToolbar, Composer, Send, Bubble  } from 'react-native-gifted-chat'
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
@@ -74,13 +74,16 @@ const ChatBot = () => {
   }
 
   return (
-    <View style={{ flex: 1, width: 380, marginBottom: 10, height: "100%" }}>
+    <View style={{
+      flex: 1, width: "100%", marginBottom: 10, height: "100%", backgroundColor: "#fff",
+    }}>
       <GiftedChat
         messages={messages}
         onSend={newMessages => handleSend(newMessages)}
         user={{ _id: 1 }}
+        alwaysShowSend
         renderInputToolbar={props => (
-          <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 5, borderBottomWidth: 7, borderRadius: 10, borderColor: "#B95CC4",}}>
+          <View style={{ alignItems: "center", justifyContent: "center", margin: 10, marginTop: 0, borderBottomWidth: 7, borderRadius: 10, borderColor: "#B95CC4", }}>
             <InputToolbar
               {...props}
               containerStyle={{ backgroundColor: 'rgba(0,0,0,0.001)', borderTopWidth: 0, borderTopColor: '#000', borderWidth: 0, marginTop: 0, width: "100%", }}
@@ -88,12 +91,21 @@ const ChatBot = () => {
           </View>
         )}
         renderComposer={props => (
-          <Composer {...props} textInputStyle={{ color: 'black', fontSize: 16, padding: 10, }} placeholderTextColor="#888" />
+          <Composer {...props} textInputStyle={{ color: 'black', fontSize: 16, padding: 10, }} placeholderTextColor="#888" placeholder="Escribe un mensaje..." />
         )}
         renderSend={props => (
           <Send {...props} containerStyle={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Image style={{ width: 100, height: 65, marginBottom: 25, }} source={require("../assets/img/SendButton.png")} />
+            <Image style={{ width: 100, height: 65, marginBottom: 30, }} source={require("../assets/img/SendButton.png")} />
           </Send>
+        )}
+        renderBubble={props => (
+          <Bubble
+            {...props}
+            wrapperStyle={{
+              left: { backgroundColor: '#f1e2f4' }, // Cambia el color de las burbujas de respuestas
+              right: { backgroundColor: '#B95CC4' }, // Cambia el color de las burbujas de preguntas
+            }}
+          />
         )}
       />
     </View>
