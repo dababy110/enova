@@ -45,6 +45,8 @@ export default function App() {
             headerTintColor: "#B400AA",
             headerStyle: {
               height: 150,
+              borderBottomWidth: .3,
+              borderBottomColor: "#000",
             },
             headerTitle: () => (
               <CustomHeader />
