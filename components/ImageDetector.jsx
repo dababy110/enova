@@ -5,30 +5,60 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import axios from "axios";
 
-import { API_KEY_GOOGLE_VISION } from "../config.js";
+import { API_KEY_GOOGLE_VISION, API_KEY_OPENAI } from "../config.js";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
 const ImageDetector = () => {
+  const [data, setData] = useState("");
   const [labels, setLabels] = useState([]);
   const [imageUri, setImageUri] = useState(null);
-  const [messages, setMessages] = useState("");
 
   let detectorImageLabels = [];
 
   labels.map((label) => detectorImageLabels.push(label.description));
 
+  if (data == "Gris") {
+    return (
+      <View>
+        <Text>Gris</Text>
+      </View>
+    )
+  } else if (data == "Naranja") {
+    return (
+      <View>
+        <Text>Naranja</Text>
+      </View>
+    )
+  } else if (data == "Verde") {
+    return (
+      <View>
+        <Text>Verde</Text>
+      </View>
+    )
+  } else if (data == "Amariilo") {
+    return (
+      <View>
+        <Text>Amarillo</Text>
+      </View>
+    )
+  } else if (data == "Azul") {
+    return (
+      <View>
+        <Text>Azul</Text>
+      </View>
+    )
+  } else if (data == "Rojo") {
+    return (
+      <View>
+        <Text>Rojo</Text>
+      </View>
+    )
+  }
 
   const handleSend = async (newMessages = []) => {
     try {
       setIsLoading(true);
-
-      const userMessage = newMessages[0];
-      const messageText = userMessage.text.toLowerCase();
-
-      setMessages((previousMessages) =>
-        GiftedChat.append(previousMessages, userMessage)
-      );
 
       const apiRequestBody = {
         model: "gpt-3.5-turbo",
@@ -65,23 +95,11 @@ const ImageDetector = () => {
           body: JSON.stringify(apiRequestBody),
         }
       );
-      const recipe = response.data.choices[0].text.trim();
 
-      const botMessage = {
-        _id: new Date().getTime() + 1,
-        text: recipe,
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "Enova",
-          avatar: require("../assets/img/wabi-circulo.png"),
-          pending: true,
-        },
-      };
+      const responseData = response.data.choices[0].text.trim();
 
-      setMessages((previousMessages) =>
-        GiftedChat.append(previousMessages, botMessage)
-      );
+      setData(responseData);
+
       setIsLoading(false);
     } catch (e) {
       setIsLoading(false);
