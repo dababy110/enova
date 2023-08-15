@@ -1,10 +1,18 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import axios from "axios";
 
+import DefaultResponse from "./DefaultResponse.jsx";
 import { API_KEY_GOOGLE_VISION, API_KEY_OPENAI } from "../config.js";
 
 import { MaterialIcons } from "@expo/vector-icons";
@@ -12,54 +20,109 @@ import { MaterialIcons } from "@expo/vector-icons";
 const ImageDetector = () => {
   const [data, setData] = useState("");
   const [labels, setLabels] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState(null);
 
-  let detectorImageLabels = [];
+  const BasureroAmarillo = require("../assets/img/Basureros/BasureroAmarillo.png");
+  const BasureroNaranja = require("../assets/img/Basureros/BasureroNaranja.png");
+  const BasureroVerde = require("../assets/img/Basureros/BasureroVerde.png");
+  const BasureroAzul = require("../assets/img/Basureros/BasureroAzul.png");
+  const BasureroGris = require("../assets/img/Basureros/BasureroGris.png");
+  const BasureroRojo = require("../assets/img/Basureros/BasureroRojo.png");
+  let profileComponet;
 
-  labels.map((label) => detectorImageLabels.push(label.description));
+  console.log("Esta es la respuesta que va en el if: ",data)
 
-  if (data == "Gris") {
-    return (
-      <View>
-        <Text>Gris</Text>
-      </View>
-    )
-  } else if (data == "Naranja") {
-    return (
-      <View>
-        <Text>Naranja</Text>
-      </View>
-    )
-  } else if (data == "Verde") {
-    return (
-      <View>
-        <Text>Verde</Text>
-      </View>
-    )
-  } else if (data == "Amariilo") {
-    return (
-      <View>
-        <Text>Amarillo</Text>
-      </View>
-    )
-  } else if (data == "Azul") {
-    return (
-      <View>
-        <Text>Azul</Text>
-      </View>
-    )
-  } else if (data == "Rojo") {
-    return (
-      <View>
-        <Text>Rojo</Text>
-      </View>
-    )
+  if (data === "Gris") {
+    profileComponet = (
+      <DefaultResponse name="Bote Gris" url={BasureroGris} color="#808080" />
+    );
+  } else if (data === "Naranja") {
+    profileComponet = (
+      <DefaultResponse
+        name="Bote Naranja"
+        url={BasureroNaranja}
+        color="#FF8000"
+      />
+    );
+  } else if (data === "Verde") {
+    profileComponet = (
+      <DefaultResponse name="Bote Verde" url={BasureroVerde} color="#74B654" />
+    );
+  } else if (data === "Amarillo") {
+    profileComponet = (
+      <DefaultResponse
+        name="Bote Amarillo"
+        url={BasureroAmarillo}
+        color="#F8E20D"
+      />
+    );
+  } else if (data === "Azul") {
+    profileComponet = (
+      <DefaultResponse name="Bote Azul" url={BasureroAzul} color="#094293" />
+    );
+  } else if (data === "Rojo") {
+    profileComponet = (
+      <DefaultResponse name="Bote Rojo" url={BasureroRojo} color="#CB3234" />
+    );
   }
 
-  const handleSend = async (newMessages = []) => {
+  const pickImage = async () => {
     try {
-      setIsLoading(true);
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
 
+      if (!result.canceled) {
+        setImageUri(result.assets[0].uri);
+      }
+    } catch (e) {
+      console.error(e);
+      Alert("Error eligiendo la imagen, Intente De nuevo");
+    }
+  };
+
+  const analyzeImage = async () => {
+    try {
+      setLoading(true);
+
+      //GoogleVision
+      if (!imageUri) {
+        alert("Seleccione una imagen primero");
+        return;
+      }
+
+      const apiKey = API_KEY_GOOGLE_VISION;
+      const apiURL = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
+
+      const base64ImageData = await FileSystem.readAsStringAsync(imageUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const requestData = {
+        requests: [
+          {
+            image: {
+              content: base64ImageData,
+            },
+            features: [{ type: "OBJECT_LOCALIZATION", maxResults: 5 }],
+          },
+        ],
+      };
+
+      const apiResponse = await axios.post(apiURL, requestData);
+      setLabels(
+        apiResponse.data.responses[0].localizedObjectAnnotations[0].name
+      );
+
+      console.log("Esta es la deteccion de objectos: ", apiResponse.data.responses[0].localizedObjectAnnotations[0].name)
+
+      //console.log(apiResponse.data.responses[0].localizedObjectAnnotations[0].name)
+
+      //Request ChatGpt
       const apiRequestBody = {
         model: "gpt-3.5-turbo",
       };
@@ -82,7 +145,7 @@ const ImageDetector = () => {
           aerosoles o productos tecnologicos, residuos hospitalarios infecciosos) quiero que des como respuesta solamente la palabra: "Rojo" (exactamente escrita como te indique), si las 
           palabras no estan relacionadas con ninguna de las formas anteriores devuelve la palabra neutro, las palabras van a estar en ingles pero eso no deberia afectar por que lo que debes
           tomar en cuenta es el significado, recuerda dar la respuesta en español, a continuacion te dare las palabras y independientemente de la conclusion que llegues no devuelvas ningun texto
-          adiccional devuelve solo la palabra relacionada a la conclusion que llegaste como te indique anteriomente: ${detectorImageLabels}`,
+          adiccional devuelve solo la palabra relacionada a la conclusion que llegaste como te indique anteriomente: ${labels}`,
           max_tokens: 1200,
           temperature: 0.1,
           n: 1,
@@ -97,62 +160,9 @@ const ImageDetector = () => {
       );
 
       const responseData = response.data.choices[0].text.trim();
-
       setData(responseData);
 
-      setIsLoading(false);
-    } catch (e) {
-      setIsLoading(false);
-      console.log(e);
-    }
-  };
-
-  const pickImage = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        setImageUri(result.assets[0].uri);
-      }
-      console.log(result);
-    } catch (e) {
-      console.error(e);
-      Alert("Error eligiendo la imagen, Intente De nuevo");
-    }
-  };
-
-  const analyzeImage = async () => {
-    try {
-      if (!imageUri) {
-        alert("Seleccione una imagen primero");
-        return;
-      }
-
-      const apiKey = API_KEY_GOOGLE_VISION;
-      const apiURL = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
-
-      const base64ImageData = await FileSystem.readAsStringAsync(imageUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      const requestData = {
-        requests: [
-          {
-            image: {
-              content: base64ImageData,
-            },
-            features: [{ type: "LABEL_DETECTION", maxResults: 5 }],
-          },
-        ],
-      };
-
-      const apiResponse = await axios.post(apiURL, requestData);
-      setLabels(apiResponse.data.responses[0].labelAnnotations);
+      setLoading(false);
     } catch (error) {
       console.error(error);
       alert("Error analizando la imagen. Intente de nuevo");
@@ -249,14 +259,11 @@ const ImageDetector = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      {/* labels.length > 0 && (
-        <View>
-          <Text>Labels:</Text>
-          {labels.map((label) => (
-            <Text key={label.mid}>{label.description}</Text>
-          ))}
-        </View>
-          ) */}
+      {!loading ? (
+        profileComponet
+      ) : (
+        <ActivityIndicator size="large" color="#B95CC4" />
+      )}
     </View>
   );
 };
