@@ -1,3 +1,5 @@
-export const API_KEY_OPENAI = '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';
+export const API_KEY_CHAT_ENOVA = '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';
+
+export const API_KEY_IMAGE_DETECTION = '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';
 
 export const API_KEY_GOOGLE_VISION = 'AIzaSyBN-Z5Ai2wsXYHMPqLnAJSfLB56jJOfK5I';

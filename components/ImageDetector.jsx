@@ -13,7 +13,7 @@ import * as FileSystem from "expo-file-system";
 import axios from "axios";
 
 import DefaultResponse from "./DefaultResponse.jsx";
-import { API_KEY_GOOGLE_VISION, API_KEY_OPENAI } from "../config.js";
+import { API_KEY_GOOGLE_VISION, API_KEY_IMAGE_DETECTION } from "../config.js";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -29,9 +29,10 @@ const ImageDetector = () => {
   const BasureroAzul = require("../assets/img/Basureros/BasureroAzul.png");
   const BasureroGris = require("../assets/img/Basureros/BasureroGris.png");
   const BasureroRojo = require("../assets/img/Basureros/BasureroRojo.png");
+
   let profileComponet;
 
-  console.log("Esta es la respuesta que va en el if: ",data)
+  console.log(labels);
 
   if (data === "Gris") {
     profileComponet = (
@@ -118,10 +119,6 @@ const ImageDetector = () => {
         apiResponse.data.responses[0].localizedObjectAnnotations[0].name
       );
 
-      console.log("Esta es la deteccion de objectos: ", apiResponse.data.responses[0].localizedObjectAnnotations[0].name)
-
-      //console.log(apiResponse.data.responses[0].localizedObjectAnnotations[0].name)
-
       //Request ChatGpt
       const apiRequestBody = {
         model: "gpt-3.5-turbo",
@@ -130,29 +127,28 @@ const ImageDetector = () => {
       const response = await axios.post(
         "https://api.openai.com/v1/engines/text-davinci-003/completions",
         {
-          prompt: `A continuación recibirás 5 palabras que fueron extraídas de una imagen con una inteligencia artificial que analiza la 
-          imagen y detecta los objectos que hay en esa imagen, lo que quiero lograr es que dependiendo de las palabras que contienen muestre 
-          una SOLO una respuesta por todas las palabras, osea muestre una respuesta que mas se relacione (solo quiero que muestre esa respuesta 
-          no quiero que muestres ningun texto adiccional solo lo que te pido), si las palabras estan relacionadas de cualquier forma con Desechos 
-          en general (por ejemplo materiales biodegradables) quiero que des como respuesta solamente la palabra: "Gris" (exactamente escrita como te 
+          prompt: `A continacion recibiras una palabra que fue extraida de una imagen con una inteligencia aritificial que analiza la imagen y detecta
+          el objecto que hay en la imagen, lo que quiero lograr es que dependiendo de la palabra que contienen muestre SOLO una respuesta, osea 
+          muestre una respuesta que mas se relacione (solo quiero que muestre esa respuesta no quiero que muestres ningun texto adiccional solo lo que te pido) si
+          las palabras estan relacionadas de cualquier forma con Desechos en general (por ejemplo materiales biodegradables devuelve esta palabra mas que todo cuando no sepas donde clasificar un objecto entonces por regla general deberia ser desechado en el bote gris de desechos generales) quiero que des como respuesta solamente la palabra: "Gris" (exactamente escrita como te 
           indique), si las palabras estan relacionadas de cualquier forma con Restos de comida (por ejemplo huesos o cualquier resto de alimento cuenta) 
           quiero que des como respuesta solamente la palabra: "Naranja" (exactamente escrita como te indique), si las palabras estan relacionadas de cualquier
           forma con Vidrios  (por ejemplo Botellas de vidrio, vidrios rotos o vidrio en general) quiero que des como respuesta solamente la palabra: "Verde" (exactamente
-          escrita como te indique), si las palabras estan relacionadas de cualquier forma con Plasticos y envases metalicos (por ejemplo latas o envases de alimentos y bebidas 
+          escrita como te indique), si las palabras estan relacionadas de cualquier forma con Plasticos y envases metalicos (por ejemplo: Botellas, Botellas Plasticas latas, envases de alimentos, bebidas o cualquier tipo de plastico 
           en bolsas) quiero que des como respuesta solamente la palabra: "Amarillo" (exactamente escrita como te indique), si las palabras estan relacionadas de cualquier forma con 
-          Papel (por ejemplo todo tipo de papeles, cartones, periodicos, revistas, papeles de envolver, o folletos publicitarios, etc) quiero que des como respuesta solamente la palabra: 
+          Papel (por ejemplo todo tipo de papeles, cartones, periodicos, revistas, papeles de envolver, folletos publicitarios o cualquier tipo de papel) quiero que des como respuesta solamente la palabra: 
           "Azul" (exactamente escrita como te indique), si las palabras estan relacionadas de cualquier forma con  Desechos peligrosos (por ejemplo, baterias, pilas, insecticidas, aceites, 
-          aerosoles o productos tecnologicos, residuos hospitalarios infecciosos) quiero que des como respuesta solamente la palabra: "Rojo" (exactamente escrita como te indique), si las 
-          palabras no estan relacionadas con ninguna de las formas anteriores devuelve la palabra neutro, las palabras van a estar en ingles pero eso no deberia afectar por que lo que debes
-          tomar en cuenta es el significado, recuerda dar la respuesta en español, a continuacion te dare las palabras y independientemente de la conclusion que llegues no devuelvas ningun texto
-          adiccional devuelve solo la palabra relacionada a la conclusion que llegaste como te indique anteriomente: ${labels}`,
+          aerosoles o productos tecnologicos, residuos hospitalarios infecciosos o cualquier tipo de objecto que consideres que no se deberia desechar en un basurero ordinario y que podria ser perjudicial a la salud del ser humano) quiero que des como respuesta solamente la palabra: "Rojo" (exactamente escrita como te indique), si las 
+          palabras no estan relacionadas con ninguna de las formas anteriores devuelve la palabra neutro, la palabra van a estar en ingles pero eso no deberia afectar por que lo que debes
+          tomar en cuenta es el significado, recuerda dar la respuesta en español, a continuacion te dare la palabra y independientemente de la conclusion que llegues no devuelvas ningun texto
+          adiccional devuelve solo la palabra relacionada a la conclusion que llegaste como te indique anteriomente aqui va la palabra: "${labels}"`,
           max_tokens: 1200,
           temperature: 0.1,
           n: 1,
         },
         {
           headers: {
-            Authorization: `Bearer ${API_KEY_OPENAI}`,
+            Authorization: `Bearer ${API_KEY_IMAGE_DETECTION}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(apiRequestBody),
@@ -162,8 +158,11 @@ const ImageDetector = () => {
       const responseData = response.data.choices[0].text.trim();
       setData(responseData);
 
+      console.log(responseData);
+
       setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error(error);
       alert("Error analizando la imagen. Intente de nuevo");
     }

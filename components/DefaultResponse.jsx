@@ -17,6 +17,7 @@ const DefaultResponse = (props) => {
         </Text>
       </View>
       <Image style={{ height: 100, width: 90 }} source={props.url} />
+      
     </View>
   );
 };

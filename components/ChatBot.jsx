@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Image, View, ActivityIndicator } from "react-native";
 
-import { API_KEY_OPENAI } from "../config.js";
+import { API_KEY_CHAT_ENOVA } from "../config.js";
 
 import axios from "axios";
 import {
@@ -45,14 +45,14 @@ const ChatBot = () => {
           tus respuestas en la siguiente informacion: "" y si la pregunta se sale tus conocimiento y no viene en el texto anterior, responderas 
           lo siguiente: "Lo siento esta pregunta esta fuera de los conocimientos de Wabi", y si la pregunta es un saludo o una pregunta de como te 
           encuentras responderas este mensaje default: "¡Hola! Soy Wabi y estoy disponible para ayudarte en cualquier duda que tengas respecto al 
-          reciclaje." La pregunta es la siguente recuerda comparla bien dependiendo de cada caso: ${messageText}`,
+          reciclaje." La pregunta es la siguente recuerda comparla bien dependiendo de cada caso. Responde correctamente a lo siguiente "${messageText}"`,
           max_tokens: 1200,
           temperature: 0.1,
           n: 1,
         },
         {
           headers: {
-            Authorization: `Bearer ${API_KEY_OPENAI}`,
+            Authorization: `Bearer ${API_KEY_CHAT_ENOVA}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(apiRequestBody),
@@ -75,7 +75,9 @@ const ChatBot = () => {
       setMessages((previousMessages) =>
         GiftedChat.append(previousMessages, botMessage)
       );
+      
       setIsLoading(false);
+
     } catch (e) {
       setIsLoading(false);
       console.log(e);
