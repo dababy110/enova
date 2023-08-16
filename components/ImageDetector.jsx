@@ -134,7 +134,7 @@ const ImageDetector = () => {
           indique), si las palabras estan relacionadas de cualquier forma con Restos de comida (por ejemplo huesos o cualquier resto de alimento cuenta) 
           quiero que des como respuesta solamente la palabra: "Naranja" (exactamente escrita como te indique), si las palabras estan relacionadas de cualquier
           forma con Vidrios  (por ejemplo Botellas de vidrio, vidrios rotos o vidrio en general) quiero que des como respuesta solamente la palabra: "Verde" (exactamente
-          escrita como te indique), si las palabras estan relacionadas de cualquier forma con Plasticos y envases metalicos (por ejemplo: Botellas, Botellas Plasticas latas, envases de alimentos, bebidas o cualquier tipo de plastico 
+          escrita como te indique), si las palabras estan relacionadas de cualquier forma con Plasticos (por ejemplo: Botellas, Botellas Plasticas latas, envases plasticos de alimentos, bebidas o cualquier tipo de plastico 
           en bolsas) quiero que des como respuesta solamente la palabra: "Amarillo" (exactamente escrita como te indique), si las palabras estan relacionadas de cualquier forma con 
           Papel (por ejemplo todo tipo de papeles, cartones, periodicos, revistas, papeles de envolver, folletos publicitarios o cualquier tipo de papel) quiero que des como respuesta solamente la palabra: 
           "Azul" (exactamente escrita como te indique), si las palabras estan relacionadas de cualquier forma con  Desechos peligrosos (por ejemplo, baterias, pilas, insecticidas, aceites, 
