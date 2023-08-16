@@ -109,6 +109,8 @@ const ChatBot = () => {
               borderBottomWidth: 7,
               borderRadius: 10,
               borderColor: "#B95CC4",
+              paddingTop: 20,
+              paddingBottom: 20,
             }}
           >
             <InputToolbar

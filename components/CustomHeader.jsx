@@ -14,7 +14,7 @@ const CustomHeader = () => {
 
   return (
     <View
-      style={{ alignItems: "center", justifyContent: "center", width: "100%", margin: auto, }}
+      style={{ alignItems: "center", justifyContent: "center", width: "100%", }}
     >
       <Image
         style={{ width: 50, height: 25 }}
