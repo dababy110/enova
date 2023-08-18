@@ -19,7 +19,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 const ImageDetector = () => {
   const [data, setData] = useState("");
-  const [labels, setLabels] = useState([]);
   const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState(null);
 
@@ -32,39 +31,45 @@ const ImageDetector = () => {
 
   let profileComponet;
 
-  console.log(labels);
-
   if (data === "Gris") {
     profileComponet = (
-      <DefaultResponse name="Bote Gris" url={BasureroGris} color="#808080" />
+      <DefaultResponse
+        name="Bote de Desechos Generales"
+        url={BasureroGris}
+        color="#808080"
+      />
     );
   } else if (data === "Naranja") {
     profileComponet = (
       <DefaultResponse
-        name="Bote Naranja"
+        name="Bote Orgánico"
         url={BasureroNaranja}
         color="#FF8000"
       />
     );
   } else if (data === "Verde") {
     profileComponet = (
-      <DefaultResponse name="Bote Verde" url={BasureroVerde} color="#74B654" />
+      <DefaultResponse name="Bote Vidrio" url={BasureroVerde} color="#74B654" />
     );
   } else if (data === "Amarillo") {
     profileComponet = (
       <DefaultResponse
-        name="Bote Amarillo"
+        name="Bote Plastico"
         url={BasureroAmarillo}
         color="#F8E20D"
       />
     );
   } else if (data === "Azul") {
     profileComponet = (
-      <DefaultResponse name="Bote Azul" url={BasureroAzul} color="#094293" />
+      <DefaultResponse name="Bote Papel" url={BasureroAzul} color="#094293" />
     );
   } else if (data === "Rojo") {
     profileComponet = (
-      <DefaultResponse name="Bote Rojo" url={BasureroRojo} color="#CB3234" />
+      <DefaultResponse
+        name="Bote Desechos Peligrosos"
+        url={BasureroRojo}
+        color="#CB3234"
+      />
     );
   }
 
@@ -109,15 +114,16 @@ const ImageDetector = () => {
             image: {
               content: base64ImageData,
             },
-            features: [{ type: "OBJECT_LOCALIZATION", maxResults: 5 }],
+            features: [{ type: "OBJECT_LOCALIZATION" }],
           },
         ],
       };
 
       const apiResponse = await axios.post(apiURL, requestData);
-      setLabels(
-        apiResponse.data.responses[0].localizedObjectAnnotations[0].name
-      );
+      const test =
+        apiResponse.data.responses[0].localizedObjectAnnotations[0].name;
+
+      console.log(test);
 
       //Request ChatGpt
       const apiRequestBody = {
@@ -127,24 +133,10 @@ const ImageDetector = () => {
       const response = await axios.post(
         "https://api.openai.com/v1/engines/text-davinci-003/completions",
         {
-          prompt: `A continacion recibiras una palabra que fue extraida de una imagen con una inteligencia aritificial que analiza la imagen y detecta
-          el objecto que hay en la imagen, lo que quiero lograr es que dependiendo de la palabra que contienen muestre SOLO una respuesta, osea 
-          muestre una respuesta que mas se relacione (solo quiero que muestre esa respuesta no quiero que muestres ningun texto adiccional solo lo que te pido) si
-          las palabras estan relacionadas de cualquier forma con Desechos en general (por ejemplo materiales biodegradables devuelve esta palabra mas que todo cuando no sepas donde clasificar un objecto entonces por regla general deberia ser desechado en el bote gris de desechos generales) quiero que des como respuesta solamente la palabra: "Gris" (exactamente escrita como te 
-          indique), si las palabras estan relacionadas de cualquier forma con Restos de comida (por ejemplo huesos o cualquier resto de alimento cuenta) 
-          quiero que des como respuesta solamente la palabra: "Naranja" (exactamente escrita como te indique), si las palabras estan relacionadas de cualquier
-          forma con Vidrios  (por ejemplo Botellas de vidrio, vidrios rotos o vidrio en general) quiero que des como respuesta solamente la palabra: "Verde" (exactamente
-          escrita como te indique), si las palabras estan relacionadas de cualquier forma con Plasticos (por ejemplo: Botellas, Botellas Plasticas latas, envases plasticos de alimentos, bebidas o cualquier tipo de plastico 
-          en bolsas) quiero que des como respuesta solamente la palabra: "Amarillo" (exactamente escrita como te indique), si las palabras estan relacionadas de cualquier forma con 
-          Papel (por ejemplo todo tipo de papeles, cartones, periodicos, revistas, papeles de envolver, folletos publicitarios o cualquier tipo de papel) quiero que des como respuesta solamente la palabra: 
-          "Azul" (exactamente escrita como te indique), si las palabras estan relacionadas de cualquier forma con  Desechos peligrosos (por ejemplo, baterias, pilas, insecticidas, aceites, 
-          aerosoles o productos tecnologicos, residuos hospitalarios infecciosos o cualquier tipo de objecto que consideres que no se deberia desechar en un basurero ordinario y que podria ser perjudicial a la salud del ser humano) quiero que des como respuesta solamente la palabra: "Rojo" (exactamente escrita como te indique), si las 
-          palabras no estan relacionadas con ninguna de las formas anteriores devuelve la palabra neutro, la palabra van a estar en ingles pero eso no deberia afectar por que lo que debes
-          tomar en cuenta es el significado, recuerda dar la respuesta en español, a continuacion te dare la palabra y independientemente de la conclusion que llegues no devuelvas ningun texto
-          adiccional devuelve solo la palabra relacionada a la conclusion que llegaste como te indique anteriomente aqui va la palabra: "${labels}"`,
+          prompt: `A continuacion recibiras una palabra que fue extraida de una imagen, con una inteligencia artificial de detecion de objectos, me vas a ayudar a clasificarlas devolviendo un texto que te indicare la palabra es en ingles pero tu respuesta tiene que estar en español, si la palabra se relaciona con Desechos generales, quiero que des unicamente como respuesta solamente la palabra: "Gris",si la palabra estan relacionada de cualquier forma con Desechos organicos como restos de comida, residuos de jardinería, cáscaras de frutas y verduras, posos de café y filtros de té, quiero que des unicamente como respuesta la palabra: "Naranja", si la palabra esta relacionada de cualquier forma con Vidrio como botellas de vidrio, tarros de vidrio, restos de vidrios o cualquier cosa relacionada con vidrio, quiero que des unicamente como respuesta la palabra naranja: "Verde", si la palabra se relaciona con plasticos o envases metalicos como botellas plasticaslatas, envases plasticos de alimentos, bebidas o cualquier tipo de plastico como bolsas o envoltorios, quiero que des unicamente como respuesta la palabra: "Amarillo", si la palabra esta relacionada de cualquier forma con Papel o carton como cajas de carton, hojas de papel, documentos, bolas de papel arrugado o cualquier clase de papel o carton, quiero que des unicamente como respuesta la palabra: "Azul", si la palabra esta relacionada de cualquier forma con Desechos peligrosos como Pilas y baterías, Productos químicos domésticos, Medicamentos vencidos, Bombillas o productor electronicos dañados, qiero que des unicamente como respuesta la palabra: "Rojo", a continuacion te dare la palabra y independientemente de la conclusion que llegues no devuelvas ningun texto adiccional devuelve solo la palabra relacionada a la conclusion que llegaste como te indique anteriomente aqui va la palabra: "${test}"`,
           max_tokens: 1200,
           temperature: 0.1,
-          n: 1,
+          n: 1,         
         },
         {
           headers: {
