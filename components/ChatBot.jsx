@@ -78,9 +78,13 @@ const ChatBot = () => {
       
       setIsLoading(false);
 
-    } catch (e) {
+    } catch (error) {
       setIsLoading(false);
-      console.log(e);
+      if (error.response) {
+        console.log("Código de Estado:", error.response.status);
+        console.log("Datos de la Respuesta:", error.response.data);
+        console.log("Encabezados de la Respuesta:", error.response.headers);
+      }
     }
   };
 
