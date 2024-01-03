@@ -1,5 +1,5 @@
-
-Enova - Aplicación móvil para Reciclaje con React Native
+<h1>
+Enova - Aplicación móvil para Reciclaje con React Native<h1/>
 
 Enova es una aplicación móvil desarrollada con React Native que tiene como objetivo fomentar y facilitar el reciclaje. La
 aplicación integra las API de Chat GPT para proporcionar una experiencia de chat interactiva e informativa sobre prácticas de reciclaje, 
