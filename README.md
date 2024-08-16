@@ -1,11 +1,11 @@
-
-https://github.com/user-attachments/assets/6e6e3c42-6eea-4347-8390-c7bac8cbce15
 # Enova - Aplicación móvil para Reciclaje con React Native
 
 Enova es una aplicación móvil desarrollada con React Native que tiene como objetivo fomentar y facilitar el reciclaje mediante el uso de tecnologías avanzadas. La aplicación integra las API de Chat GPT para proporcionar una experiencia de chat interactiva e informativa sobre prácticas de reciclaje, así como la API de Google Cloud Vision para identificar y clasificar objetos reciclables mediante la tecnología de visión 
 
 ## Video 
-   Uploading whatsapp-video-2024-08-16-at-122913-am_F8Q2jqQD.mp4…
+   https://github.com/user-attachments/assets/b83b6c19-4c3e-44b1-b5f1-bc2c7fac1f5e
+
+
 
 ## Ejecutar
    1. git clone https://github.com/DAVAS110/Enova/
