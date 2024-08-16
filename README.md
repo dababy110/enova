@@ -14,3 +14,7 @@ Enova es una aplicación móvil desarrollada con React Native que tiene como obj
 
 3. **Guía de Reciclaje:**
    - Proporciona información detallada sobre cómo reciclar diferentes tipos de materiales.
+
+## Video 
+
+## Ejecutar
