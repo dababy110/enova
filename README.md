@@ -10,4 +10,6 @@ Enova es una aplicación móvil desarrollada con React Native que tiene como obj
    3. npx expo start
       
 ## *Cambiar las API Keys*
-   - Google Vision API Key y OPENAI API KEY 
+   - Google Vision API Key y OPENAI API KEY
+   ![image](https://github.com/user-attachments/assets/9bd26982-11bd-424a-8f3e-5c23af1769a4)
+
